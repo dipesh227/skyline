@@ -5,10 +5,17 @@ import { supabase } from '@/lib/supabaseClient'
 import AdminLayout from '../components/AdminLayout'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
+type EnquiryMetrics = {
+  replied: boolean
+  admission_ok: boolean
+  fee_paid: boolean
+  created_at: string
+}
+
 export default function AdminDashboard() {
   const router = useRouter()
   const [metrics, setMetrics] = useState({ total: 0, pendingReplies: 0, admissionsConfirmed: 0, feePaid: 0 })
-  const [chartData, setChartData] = useState([])
+  const [chartData, setChartData] = useState<Array<{ date: string; count: number }>>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -25,15 +32,15 @@ export default function AdminDashboard() {
   }, [])
 
   const fetchData = async () => {
-    const { data: enquiries } = await supabase.from('enquiries').select('replied, admission_ok, fee_paid, created_at')
+    const { data: enquiries } = await supabase.from('enquiries').select<"*", EnquiryMetrics>('replied, admission_ok, fee_paid, created_at')
     if (!enquiries) return
     setMetrics({
       total: enquiries.length,
-      pendingReplies: enquiries.filter(e => !e.replied).length,
-      admissionsConfirmed: enquiries.filter(e => e.admission_ok).length,
-      feePaid: enquiries.filter(e => e.fee_paid).length,
+      pendingReplies: enquiries.filter((e: EnquiryMetrics) => !e.replied).length,
+      admissionsConfirmed: enquiries.filter((e: EnquiryMetrics) => e.admission_ok).length,
+      feePaid: enquiries.filter((e: EnquiryMetrics) => e.fee_paid).length,
     })
-    const grouped = enquiries.reduce((acc: any, e) => {
+    const grouped = enquiries.reduce<Record<string, number>>((acc, e) => {
       const date = new Date(e.created_at).toLocaleDateString()
       acc[date] = (acc[date] || 0) + 1
       return acc

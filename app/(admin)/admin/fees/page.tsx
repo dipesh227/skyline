@@ -5,9 +5,17 @@ import { supabase } from '@/lib/supabaseClient'
 import AdminLayout from '../components/AdminLayout'
 import toast from 'react-hot-toast'
 
+type Student = {
+  id: number
+  name: string
+  phone: string
+  course: string | null
+  fee_paid: boolean
+}
+
 export default function FeesPage() {
   const router = useRouter()
-  const [students, setStudents] = useState<any[]>([])
+  const [students, setStudents] = useState<Student[]>([])
 
   useEffect(() => {
     if (!sessionStorage.getItem('admin_logged_in')) {
@@ -18,7 +26,7 @@ export default function FeesPage() {
   }, [])
 
   const fetchData = async () => {
-    const { data } = await supabase.from('enquiries').select('*').order('created_at', { ascending: false })
+    const { data } = await supabase.from('enquiries').select<"*", Student>('id, name, phone, course, fee_paid').order('created_at', { ascending: false })
     if (data) setStudents(data)
   }
 
@@ -38,7 +46,7 @@ export default function FeesPage() {
               <tr><th className="p-3 text-left">Name</th><th className="p-3 text-left">Phone</th><th className="p-3 text-left">Course</th><th className="p-3 text-left">Fee Paid</th><th className="p-3 text-left">Action</th></tr>
             </thead>
             <tbody>
-              {students.map(s => (
+              {students.map((s) => (
                 <tr key={s.id} className="border-b hover:bg-gray-50">
                   <td className="p-3">{s.name}</td>
                   <td className="p-3">{s.phone}</td>

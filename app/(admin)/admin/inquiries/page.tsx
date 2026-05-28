@@ -47,7 +47,7 @@ export default function InquiriesPage() {
     </div>
   )
 
-  const filtered = enquiries.filter(e => e.name.toLowerCase().includes(search.toLowerCase()) || e.phone.includes(search))
+  const filtered = enquiries.filter((e: Enquiry) => e.name.toLowerCase().includes(search.toLowerCase()) || e.phone.includes(search))
   const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
   const totalPages = Math.ceil(filtered.length / itemsPerPage)
 
@@ -93,3 +93,4 @@ export default function InquiriesPage() {
     </AdminLayout>
   )
 }
+

@@ -5,23 +5,28 @@ import { supabase } from '@/lib/supabaseClient'
 import AdminLayout from '../components/AdminLayout'
 import toast from 'react-hot-toast'
 
+type Student = {
+  id: number
+  name: string
+  phone: string
+  course: string | null
+  admission_ok: boolean
+}
+
 export default function AdmissionsPage() {
   const router = useRouter()
-  const [students, setStudents] = useState<any[]>([])
+  const [students, setStudents] = useState<Student[]>([])
 
   useEffect(() => {
-    const checkAuth = () => {
-      if (!sessionStorage.getItem('admin_logged_in')) {
-        router.push('/admin/login')
-      }
+    if (!sessionStorage.getItem('admin_logged_in')) {
+      router.push('/admin/login')
     }
-    checkAuth()
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchData = async () => {
-    const { data } = await supabase.from('enquiries').select('*').order('created_at', { ascending: false })
+    const { data } = await supabase.from('enquiries').select<"*", Student>('id, name, phone, course, admission_ok').order('created_at', { ascending: false })
     if (data) setStudents(data)
   }
 
@@ -41,7 +46,7 @@ export default function AdmissionsPage() {
               <tr><th className="p-3 text-left">Name</th><th className="p-3 text-left">Phone</th><th className="p-3 text-left">Course</th><th className="p-3 text-left">Admission Confirmed</th><th className="p-3 text-left">Action</th></tr>
             </thead>
             <tbody>
-              {students.map(s => (
+              {students.map((s) => (
                 <tr key={s.id} className="border-b hover:bg-gray-50">
                   <td className="p-3">{s.name}</td>
                   <td className="p-3">{s.phone}</td>
