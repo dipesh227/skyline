@@ -22,12 +22,14 @@ export default function FeesPage() {
       router.push('/admin/login')
     }
     fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router])
 
   const fetchData = async () => {
-    const { data } = await supabase.from('enquiries').select<"*", Student>('id, name, phone, course, fee_paid').order('created_at', { ascending: false })
-    if (data) setStudents(data)
+    const { data } = await supabase
+      .from('enquiries')
+      .select('id, name, phone, course, fee_paid')
+      .order('created_at', { ascending: false })
+    if (data) setStudents(data as Student[])
   }
 
   const toggleFeePaid = async (id: number, current: boolean) => {

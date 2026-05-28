@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 import AdminLayout from '../components/AdminLayout'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-type EnquiryMetrics = {
+type Enquiry = {
   replied: boolean
   admission_ok: boolean
   fee_paid: boolean
@@ -28,23 +28,25 @@ export default function AdminDashboard() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'enquiries' }, () => fetchData())
       .subscribe()
     return () => subscription.unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router])
 
   const fetchData = async () => {
-    const { data: enquiries } = await supabase.from('enquiries').select<"*", EnquiryMetrics>('replied, admission_ok, fee_paid, created_at')
-    if (!enquiries) return
+    const { data } = await supabase
+      .from('enquiries')
+      .select('replied, admission_ok, fee_paid, created_at')
+    if (!data) return
+    const enquiries = data as Enquiry[]
     setMetrics({
       total: enquiries.length,
-      pendingReplies: enquiries.filter((e: EnquiryMetrics) => !e.replied).length,
-      admissionsConfirmed: enquiries.filter((e: EnquiryMetrics) => e.admission_ok).length,
-      feePaid: enquiries.filter((e: EnquiryMetrics) => e.fee_paid).length,
+      pendingReplies: enquiries.filter(e => !e.replied).length,
+      admissionsConfirmed: enquiries.filter(e => e.admission_ok).length,
+      feePaid: enquiries.filter(e => e.fee_paid).length,
     })
-    const grouped = enquiries.reduce<Record<string, number>>((acc, e) => {
+    const grouped: Record<string, number> = {}
+    enquiries.forEach(e => {
       const date = new Date(e.created_at).toLocaleDateString()
-      acc[date] = (acc[date] || 0) + 1
-      return acc
-    }, {})
+      grouped[date] = (grouped[date] || 0) + 1
+    })
     const chartArray = Object.entries(grouped).map(([date, count]) => ({ date, count })).slice(-7)
     setChartData(chartArray)
     setLoading(false)
