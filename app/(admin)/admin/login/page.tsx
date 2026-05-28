@@ -1,30 +1,21 @@
 ﻿'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     if (username === 'admin' && password === 'admin123') {
-      // Store login with timestamp (expires in 24 hours)
-      const loginData = {
-        loggedIn: true,
-        timestamp: Date.now(),
-        expiry: 24 * 60 * 60 * 1000 // 24 hours
-      }
-      localStorage.setItem('admin_auth', JSON.stringify(loginData))
+      localStorage.setItem('admin_auth', 'true')
       toast.success('Login successful')
-      // Force full page reload to ensure storage is read
       window.location.href = '/admin/dashboard'
     } else {
-      toast.error('Invalid username or password')
+      toast.error('Invalid credentials')
       setLoading(false)
     }
   }
@@ -38,7 +29,7 @@ export default function AdminLogin() {
           <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 border rounded-lg" required />
           <button type="submit" disabled={loading} className="btn-primary w-full">{loading ? 'Logging in...' : 'Login'}</button>
         </form>
-        <p className="text-center text-sm text-gray-500 mt-4">Default: admin / admin123</p>
+        <p className="text-center text-sm text-gray-500 mt-4">admin / admin123</p>
       </div>
     </div>
   )
