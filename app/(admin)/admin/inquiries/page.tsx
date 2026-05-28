@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import AdminLayout from '../components/AdminLayout'
 import toast from 'react-hot-toast'
+import { isAdminAuthenticated } from '@/lib/adminAuth'
 
 type Enquiry = {
   id: number; name: string; phone: string; email: string | null; course: string | null;
@@ -19,7 +20,7 @@ export default function InquiriesPage() {
   const itemsPerPage = 10
 
   useEffect(() => {
-    if (!sessionStorage.getItem('admin_logged_in')) {
+    if (!isAdminAuthenticated()) {
       router.push('/admin/login')
     }
     fetchEnquiries()
@@ -93,4 +94,5 @@ export default function InquiriesPage() {
     </AdminLayout>
   )
 }
+
 

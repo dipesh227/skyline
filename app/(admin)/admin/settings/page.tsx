@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AdminLayout from '../components/AdminLayout'
 import toast from 'react-hot-toast'
+import { isAdminAuthenticated } from '@/lib/adminAuth'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -11,7 +12,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!sessionStorage.getItem('admin_logged_in')) {
+    if (!isAdminAuthenticated()) {
       router.push('/admin/login')
     }
   }, [router])
@@ -48,3 +49,4 @@ export default function SettingsPage() {
     </AdminLayout>
   )
 }
+

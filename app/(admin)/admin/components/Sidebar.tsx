@@ -9,11 +9,10 @@ export default function Sidebar({ closeSidebar }: { closeSidebar?: () => void })
   const pathname = usePathname()
   const router = useRouter()
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    toast.success('Logged out')
-    router.push('/admin/login')
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('admin_auth')
+    window.location.href = '/admin/login'
+}
 
   const menuItems = [
     { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -45,4 +44,5 @@ export default function Sidebar({ closeSidebar }: { closeSidebar?: () => void })
     </aside>
   )
 }
+
 

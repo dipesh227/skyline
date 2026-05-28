@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import AdminLayout from '../components/AdminLayout'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { isAdminAuthenticated, logoutAdmin } from '@/lib/adminAuth'
 
 type Enquiry = {
   replied: boolean
@@ -19,8 +20,9 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!sessionStorage.getItem('admin_logged_in')) {
+    if (!isAdminAuthenticated()) {
       router.push('/admin/login')
+      return
     }
     fetchData()
     const subscription = supabase

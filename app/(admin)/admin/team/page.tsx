@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 import AdminLayout from '../components/AdminLayout'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { isAdminAuthenticated } from '@/lib/adminAuth'
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import SortableTeamRow from './components/SortableTeamRow'
@@ -26,7 +27,7 @@ export default function TeamListPage() {
   const [filterActive, setFilterActive] = useState<'all' | 'active' | 'inactive'>('all')
 
   useEffect(() => {
-    if (!sessionStorage.getItem('admin_logged_in')) router.push('/admin/login')
+    if (!isAdminAuthenticated()) router.push('/admin/login')
   }, [router])
 
   const fetchMembers = async () => {
@@ -111,6 +112,7 @@ export default function TeamListPage() {
     </AdminLayout>
   )
 }
+
 
 
 

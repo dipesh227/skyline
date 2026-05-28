@@ -1,26 +1,32 @@
 ﻿'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabaseClient'
 import toast from 'react-hot-toast'
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      toast.error('Invalid credentials: ' + error.message)
+    if (username === 'admin' && password === 'admin123') {
+      // Store login with timestamp (expires in 24 hours)
+      const loginData = {
+        loggedIn: true,
+        timestamp: Date.now(),
+        expiry: 24 * 60 * 60 * 1000 // 24 hours
+      }
+      localStorage.setItem('admin_auth', JSON.stringify(loginData))
+      toast.success('Login successful')
+      // Force full page reload to ensure storage is read
+      window.location.href = '/admin/dashboard'
     } else {
-      toast.success('Logged in successfully')
-      router.push('/admin/dashboard')
+      toast.error('Invalid username or password')
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
@@ -28,11 +34,11 @@ export default function AdminLogin() {
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-primary mb-6">Admin Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 border rounded-lg" required />
+          <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} className="w-full p-3 border rounded-lg" required />
           <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 border rounded-lg" required />
           <button type="submit" disabled={loading} className="btn-primary w-full">{loading ? 'Logging in...' : 'Login'}</button>
         </form>
-        <p className="text-center text-sm text-gray-500 mt-4">Use admin@skyline.com / admin123 (create in Supabase Auth)</p>
+        <p className="text-center text-sm text-gray-500 mt-4">Default: admin / admin123</p>
       </div>
     </div>
   )
