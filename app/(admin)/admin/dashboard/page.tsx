@@ -12,10 +12,17 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) router.push('/admin/login')
-    })
-  }, [router])
+    if (!sessionStorage.getItem('admin_logged_in')) {
+      router.push('/admin/login')
+    }
+    fetchData()
+    const subscription = supabase
+      .channel('enquiries_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'enquiries' }, () => fetchData())
+      .subscribe()
+    return () => subscription.unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const fetchData = async () => {
     const { data: enquiries } = await supabase.from('enquiries').select('replied, admission_ok, fee_paid, created_at')
@@ -35,15 +42,6 @@ export default function AdminDashboard() {
     setChartData(chartArray)
     setLoading(false)
   }
-
-  useEffect(() => {
-    fetchData()
-    const subscription = supabase
-      .channel('enquiries_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'enquiries' }, () => fetchData())
-      .subscribe()
-    return () => subscription.unsubscribe()
-  }, [])
 
   return (
     <AdminLayout>

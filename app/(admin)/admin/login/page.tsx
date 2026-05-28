@@ -5,21 +5,18 @@ import { supabase } from '@/lib/supabaseClient'
 import toast from 'react-hot-toast'
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('dipesh@skyline.com')
-  const [password, setPassword] = useState('dipesh')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    console.log('Attempting login with email:', email)
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      console.error('Login error details:', error)
-      toast.error(`Login failed: ${error.message}`)
+      toast.error('Invalid credentials: ' + error.message)
     } else {
-      console.log('Login success:', data)
       toast.success('Logged in successfully')
       router.push('/admin/dashboard')
     }
@@ -35,7 +32,7 @@ export default function AdminLogin() {
           <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 border rounded-lg" required />
           <button type="submit" disabled={loading} className="btn-primary w-full">{loading ? 'Logging in...' : 'Login'}</button>
         </form>
-        <p className="text-center text-sm text-gray-500 mt-4">Default: dipesh@skyline.com / dipesh</p>
+        <p className="text-center text-sm text-gray-500 mt-4">Use admin@skyline.com / admin123 (create in Supabase Auth)</p>
       </div>
     </div>
   )

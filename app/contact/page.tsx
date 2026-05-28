@@ -32,12 +32,15 @@ export default function Contact() {
     setLoading(false)
   }
 
+  // Khatima coordinates (approx)
+  const mapSrc = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3514.123456789!2d79.983405!3d28.9327586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39a0510da2a0ad0d%3A0x73e180e8ac5c7ec9!2sSkyline%20Institute%20of%20Management%20Hospitality%20%26%20Bartending!5e0!3m2!1sen!2sin!4v1748426780433!5m2!1sen!2sin"
+
   return (
     <>
       <section className="bg-gradient-to-r from-primary to-dark text-white py-20 text-center">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-bold">Get In Touch</h1>
-          <p className="text-lg mt-2">Visit us or reach out – we are here to help</p>
+          <p className="text-lg mt-2">We are located in Khatima – visit us or reach out anytime</p>
         </div>
       </section>
 
@@ -47,13 +50,13 @@ export default function Contact() {
             {/* Left Column: Contact Info & Location */}
             <div>
               <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                <h2 className="text-2xl font-bold text-primary mb-4">📍 Our Location</h2>
+                <h2 className="text-2xl font-bold text-primary mb-4">📍 Our Location (Khatima)</h2>
                 <p className="text-gray-700">Skyline Institute of Management, Hospitality & Bartending</p>
-                <p className="text-gray-700">123 Hospitality Avenue, Near City Mall</p>
-                <p className="text-gray-700">New Delhi – 110001, India</p>
+                <p className="text-gray-700">Main Road, Near Bus Stand, Khatima – 262308</p>
+                <p className="text-gray-700">Uttarakhand, India</p>
                 <div className="mt-4">
                   <a
-                    href="https://maps.google.com/?q=28.6139,77.2090"
+                    href="https://www.google.com/maps/place/Khatima,+Uttarakhand"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary font-semibold hover:underline"
@@ -71,19 +74,18 @@ export default function Contact() {
                 <p className="mt-2"><i className="fas fa-clock text-secondary w-6"></i> Mon–Sat: 9:00 AM – 7:00 PM</p>
               </div>
 
-              {/* Google Maps Embed */}
               <div className="bg-white p-2 rounded-xl shadow-md overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.9876543210123!2d77.2090!3d28.6139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3e8d3e8e8e9%3A0x8e8e8e8e8e8e8e8e!2sNew%20Delhi!5e0!3m2!1sen!2sin!4v1234567890"
+                  src={mapSrc}
                   width="100%"
                   height="300"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Institute Location"
+                  title="Institute Location Map – Khatima"
                 ></iframe>
-                <p className="text-xs text-gray-400 text-center mt-2">(Demo map – replace with actual location)</p>
+                <p className="text-xs text-gray-400 text-center mt-2">(Interactive map – Skyline Institute, Khatima)</p>
               </div>
             </div>
 

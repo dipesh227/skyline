@@ -19,10 +19,12 @@ export default function InquiriesPage() {
   const itemsPerPage = 10
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) router.push('/admin/login')
-    })
-  }, [router])
+    if (!sessionStorage.getItem('admin_logged_in')) {
+      router.push('/admin/login')
+    }
+    fetchEnquiries()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const fetchEnquiries = async () => {
     setLoading(true)
@@ -30,15 +32,6 @@ export default function InquiriesPage() {
     if (!error && data) setEnquiries(data)
     setLoading(false)
   }
-
-  useEffect(() => {
-    fetchEnquiries()
-    const subscription = supabase
-      .channel('enquiries_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'enquiries' }, () => fetchEnquiries())
-      .subscribe()
-    return () => subscription.unsubscribe()
-  }, [])
 
   const updateStatus = async (id: number, field: string, value: boolean) => {
     const { error } = await supabase.from('enquiries').update({ [field]: value }).eq('id', id)
@@ -62,18 +55,24 @@ export default function InquiriesPage() {
     <AdminLayout>
       <div className="p-6">
         <h1 className="text-3xl font-bold text-primary mb-6">Inquiries Management</h1>
-        <div className="mb-4 flex justify-between">
+        <div className="mb-4">
           <input type="text" placeholder="Search by name or phone" value={search} onChange={e => setSearch(e.target.value)} className="p-2 border rounded w-64" />
         </div>
         {loading ? <p>Loading...</p> : (
           <>
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white rounded-xl shadow">
-                <thead className="bg-primary text-white"><tr><th className="p-3">Name</th><th>Phone</th><th>Email</th><th>Course</th><th>Message</th><th>Actions</th><th>Replied</th><th>Admission</th><th>Fee Paid</th></td></thead>
+            <div className="overflow-x-auto bg-white rounded-xl shadow">
+              <table className="min-w-full">
+                <thead className="bg-primary text-white">
+                  <tr><th className="p-3 text-left">Name</th><th>Phone</th><th>Email</th><th>Course</th><th>Message</th><th>Actions</th><th>Replied</th><th>Admission</th><th>Fee Paid</th></tr>
+                </thead>
                 <tbody>
                   {paginated.map((enq) => (
                     <tr key={enq.id} className="border-b hover:bg-gray-50">
-                      <td className="p-3">{enq.name}</td><td className="p-3">{enq.phone}</td><td className="p-3">{enq.email || '-'}</td><td className="p-3">{enq.course || '-'}</td><td className="p-3 max-w-xs truncate">{enq.message || '-'}</td>
+                      <td className="p-3">{enq.name}</td>
+                      <td className="p-3">{enq.phone}</td>
+                      <td className="p-3">{enq.email || '-'}</td>
+                      <td className="p-3">{enq.course || '-'}</td>
+                      <td className="p-3 max-w-xs truncate">{enq.message || '-'}</td>
                       <td className="p-3">{contactActions(enq.phone, enq.email)}</td>
                       <td className="p-3"><input type="checkbox" checked={enq.replied} onChange={(e) => updateStatus(enq.id, 'replied', e.target.checked)} /></td>
                       <td className="p-3"><input type="checkbox" checked={enq.admission_ok} onChange={(e) => updateStatus(enq.id, 'admission_ok', e.target.checked)} /></td>

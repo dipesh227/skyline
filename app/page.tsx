@@ -1,6 +1,7 @@
 ﻿'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 export default function Home() {
   const fadeUp = {
@@ -10,9 +11,20 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-dark to-primary text-white py-20 md:py-28">
-        <div className="container-custom grid md:grid-cols-2 gap-12 items-center">
+      {/* Hero Section with Background Image */}
+      <section className="relative bg-gradient-to-br from-dark to-primary text-white py-20 md:py-28 overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 z-0 opacity-20">
+          <Image
+            src="/images/hero-bg.jpeg"
+            alt="Background pattern"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+        
+        <div className="container-custom relative z-10 grid md:grid-cols-2 gap-12 items-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp}>
             <span className="bg-secondary/20 text-secondary px-4 py-1 rounded-full text-sm">#1 Bartending Institute</span>
             <h1 className="text-4xl md:text-6xl font-bold mt-4">Build Your Career in <span className="text-secondary">Bartending & Hospitality</span></h1>
@@ -22,13 +34,21 @@ export default function Home() {
               <Link href="/courses" className="btn-secondary">Explore Courses</Link>
             </div>
           </motion.div>
-          <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-            <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&auto=format" alt="Bartending" className="rounded-3xl shadow-xl" />
-          </motion.div>
+          
+          <div className="relative h-[400px] md:h-[500px] w-full rounded-3xl overflow-hidden shadow-xl">
+            <Image
+              src="/images/hero-image.jpeg"
+              alt="Bartending student pouring cocktail"
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Stats Section */}
       <section className="py-16 bg-light">
         <div className="container-custom grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[{ value: '5x', label: 'IFBA Flair Champion' }, { value: '30+', label: 'Bar Exposure Visits' }, { value: '100%', label: 'Practical Training' }, { value: 'Top 10', label: 'National Finalist' }].map((stat, i) => (

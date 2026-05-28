@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
-import { LayoutDashboard, MessageSquare, UserPlus, DollarSign, Settings, LogOut, X } from 'lucide-react'
+import { LayoutDashboard, MessageSquare, UserPlus, DollarSign, Settings, LogOut, X, Users } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function Sidebar({ closeSidebar }: { closeSidebar?: () => void }) {
@@ -20,6 +20,7 @@ export default function Sidebar({ closeSidebar }: { closeSidebar?: () => void })
     { href: '/admin/inquiries', icon: MessageSquare, label: 'Inquiries' },
     { href: '/admin/admissions', icon: UserPlus, label: 'Admissions' },
     { href: '/admin/fees', icon: DollarSign, label: 'Fee Collection' },
+    { href: '/admin/team', icon: Users, label: 'Team Management' },
     { href: '/admin/settings', icon: Settings, label: 'Settings' },
   ]
 
@@ -44,3 +45,4 @@ export default function Sidebar({ closeSidebar }: { closeSidebar?: () => void })
     </aside>
   )
 }
+
